@@ -10,6 +10,7 @@ eventListeners();
 
 function eventListeners() {
     document.addEventListener('DOMContentLoaded', preguntarPresupuesto);
+    formulario.addEventListener('submit', agregarGastos);
 }
 
 
@@ -35,6 +36,27 @@ class UI {
         document.querySelector('#restante').textContent = restante;
 
     }
+
+    imprimirAlerta(mensaje, tipo) {
+        //crear el div
+        const divMensaje = document.createElement('div');
+        divMensaje.classList.add('text-center', 'alert')
+
+        if(tipo === 'error') {
+            divMensaje.classList.add('alert-danger');
+        } else {
+            divMensaje.classList.add('alert-success');
+        }
+
+        //agregar el texto
+        divMensaje.textContent = mensaje;
+        //agregar al html
+        document.querySelector('.primario').insertBefore(divMensaje, formulario);
+
+        setTimeout(() => {
+            divMensaje.remove();
+        }, 3000);
+    }
 }
 
 //instanciar
@@ -53,4 +75,24 @@ function preguntarPresupuesto() {
     presupuesto = new Presupuesto(presupuestoUsuario)
 
     ui.insertarPresupuesto(presupuesto)
+}
+
+function agregarGastos(e) {
+    e.preventDefault();
+
+    //leer campos del formulario
+    const gasto = document.querySelector('#gasto').value;
+    const cantidad = document.querySelector('#cantidad').value;
+
+    if (gasto === '' || cantidad === '') {
+        ui.imprimirAlerta('Ambos campos son obligatorios', 'error');
+
+        return;
+    } else if( cantidad <= 0 || isNaN(cantidad)) {
+        ui.imprimirAlerta('Cantidad no Válida', 'error');
+    
+        return;
+    }
+
+    console.log('Agregando Gastos')
 }
